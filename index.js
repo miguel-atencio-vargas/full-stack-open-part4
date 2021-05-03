@@ -1,21 +1,20 @@
 'use strict';
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-});
-
-const Blog = mongoose.model('Blog', blogSchema);
+const Blog = require('./models/blog');
 
 const mongoUrl = process.env.MONGODB_URI;
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+mongoose.connect(mongoUrl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+});
 
 app.use(cors());
 app.use(express.json());
