@@ -11,46 +11,46 @@ describe('Dummy test', () => {
 
 const blogs = [
   {
-    '_id': '6090726f02080a0f22c0b2d1',
-    'title': 'Blog 1',
-    'author': 'John Doe',
-    'url': 'https://howto.com',
-    'likes': 12,
+    _id: '5a422a851b54a676234d17f7',
+    title: 'React patterns',
+    author: 'Michael Chan',
+    url: 'https://reactpatterns.com/',
+    likes: 7
   },
   {
-    '_id': '6090726f02080a0f22c0b2d1',
-    'title': 'Blog 1.2',
-    'author': 'John Doe',
-    'url': 'https://howto.com',
-    'likes': 1,
+    _id: '5a422aa71b54a676234d17f8',
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5
   },
   {
-    '_id': '6090726f02080a0f22c0b2d1',
-    'title': 'Blog 1.3',
-    'author': 'John Doe',
-    'url': 'https://howto.com',
-    'likes': 0,
+    _id: '5a422b3a1b54a676234d17f9',
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12
   },
   {
-    '_id': '609074b5a5f2f41a8f1fef2a',
-    'title': 'Blog 2',
-    'author': 'KJ',
-    'url': 'https://howto.com',
-    'likes': 4,
+    _id: '5a422b891b54a676234d17fa',
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    likes: 10
   },
   {
-    '_id': '609074c3a5f2f41a8f1fef2b',
-    'title': 'Blog 3',
-    'author': 'KJ',
-    'url': 'https://howto.com',
-    'likes': 2,
+    _id: '5a422ba71b54a676234d17fb',
+    title: 'TDD harms architecture',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    likes: 0,
   },
   {
-    '_id': '6090af5d867d732a3ff7d5c6',
-    'title': 'Blog 4',
-    'author': 'Malik',
-    'url': 'https://howto.com',
-    'likes': 6,
+    _id: '5a422bc61b54a676234d17fc',
+    title: 'Type wars',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    likes: 2,
   }
 ];
 
@@ -60,29 +60,29 @@ describe('total likes', () => {
   });
   test('when list has only one blog, equals the likes of that', () => {
     const result = listHelper.totalLikes([{
-      '_id': '609074b5a5f2f41a8f1fef2a',
-      'title': 'Blog 2',
-      'author': 'Joe Hampton',
-      'url': 'https://howto.com',
-      'likes': 4,
+      _id: '5a422bc61b54a676234d17fc',
+      title: 'Type wars',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+      likes: 2,
     }]);
-    expect(result).toBe(4);
+    expect(result).toBe(2);
   });
   test('of a bigger list is calculated right', () => {
     const result = listHelper.totalLikes(blogs);
-    expect(result).toBe(25);
+    expect(result).toBe(36);
   });
 });
 
-describe('obtain a blog', () => {
+describe('obtain a special blog', () => {
   test('get the most rated blog', () => {
     const result = listHelper.favoriteBlog(blogs);
     const mostRatedBlog = {
-      '_id': '6090726f02080a0f22c0b2d1',
-      'title': 'Blog 1',
-      'author': 'John Doe',
-      'url': 'https://howto.com',
-      'likes': 12,
+      _id: '5a422b3a1b54a676234d17f9',
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes: 12
     };
     expect(result).toMatchObject(mostRatedBlog);
   });
@@ -90,5 +90,16 @@ describe('obtain a blog', () => {
 
 describe('obtain the author with most blogs writted', () => {
   const result = listHelper.mostBlogs(blogs);
-  expect(result).toMatchObject({ author: 'John Doe', blogs: 3 });
+  expect(result).toMatchObject({
+    author: 'Robert C. Martin',
+    blogs: 3
+  });
+});
+
+describe('obtain the most liked author', () => {
+  const result = listHelper.mostLikes(blogs);
+  expect(result).toMatchObject({
+    author: 'Edsger W. Dijkstra',
+    likes: 17
+  });
 });
