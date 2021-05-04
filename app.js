@@ -1,11 +1,12 @@
 'use strict';
-
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
 
 const config = require('./utils/config');
+const logger = require('./utils/logger');
+const middleware = require('./utils/middleware');
 const blogRouter = require('./controllers/blog');
 
 mongoose.connect(config.MONGODB_URI, {
@@ -16,12 +17,17 @@ mongoose.connect(config.MONGODB_URI, {
 })
   .then((_) => {
     const uri = _.connections[0]._connectionString;
-    console.log('Connected to:', uri);
+    logger.info('Connected to:', uri);
   })
-  .catch((err) => console.log(err));
+  .catch((err) => logger.error(err));
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/blog', blogRouter);
+app.use(middleware.requestLogger);
+
+app.use('/api/blogs', blogRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;
