@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "test-debugger": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "author": "Miguel Atencio",
   "license": "MIT",
