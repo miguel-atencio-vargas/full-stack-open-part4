@@ -1,5 +1,9 @@
-const dummy = (array) => {
+const dummy = () => {
   return 1;
 };
 
-module.exports = { dummy };
+const totalLikes = (blogList) => {
+  return blogList.reduce((acc, blog) => acc + blog.likes, 0);
+};
+
+module.exports = { dummy, totalLikes };
