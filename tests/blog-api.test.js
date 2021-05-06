@@ -20,6 +20,11 @@ describe('/api/blogs', () => {
       .expect('Content-Type', /application\/json/);
     expect(response.body).toHaveLength(helper.initialBlogs.length);
   });
+
+  test('GET - the unique identifier property of blog posts is called "id"', async() => {
+    const response = await api.get('/api/blogs');
+    response.body.forEach(blog => expect(blog.id).toBeDefined());
+  });
 });
 
 afterAll(() => mongoose.connection.close());
