@@ -60,6 +60,21 @@ describe('/api/blogs', () => {
     };
     await api.post('/api/blogs').send(newBlog).expect(400);
   });
+
+  test('DELETE - succeed with a valid ID', async() => {
+    const [blogToDelete] = await helper.blogsInDB();
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(
+      helper.initialBlogs.length - 1
+    );
+    const titles = blogsAtEnd.map(blog => blog.title);
+    expect(titles).not.toContain(blogToDelete.title);
+  });
+
+  test('DELETE - failed with status 400 if id is not valid', async () => {
+    await api.delete('/api/blogs/aabbcc').expect(400);
+  });
 });
 
 afterAll(() => mongoose.connection.close());
