@@ -42,6 +42,24 @@ describe('/api/blogs', () => {
     const titles = blogsAtEnd.map(blog => blog.title);
     expect(titles).toContain(newBlog.title);
   });
+
+  test('POST - likes should be zero when property likes is not provided', async() => {
+    const newBlog = {
+      title: 'Clean Code',
+      author: 'Robert Martin',
+      url: 'https://cleancode.com/'
+    };
+    const response = await api.post('/api/blogs').send(newBlog);
+    expect(response.body.likes).toBe(0);
+  });
+
+  test('POST - if title or url is not provided should respond with 400', async() => {
+    const newBlog = {
+      likes: 10,
+      url: 'https://somethig.com'
+    };
+    await api.post('/api/blogs').send(newBlog).expect(400);
+  });
 });
 
 afterAll(() => mongoose.connection.close());
