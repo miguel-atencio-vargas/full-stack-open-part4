@@ -43,23 +43,25 @@ describe('/api/blogs', () => {
     expect(titles).toContain(newBlog.title);
   });
 
-  test('POST - likes should be zero when property likes is not provided', async() => {
-    const newBlog = {
-      title: 'Clean Code',
-      author: 'Robert Martin',
-      url: 'https://cleancode.com/'
-    };
-    const response = await api.post('/api/blogs').send(newBlog);
-    expect(response.body.likes).toBe(0);
-  });
+  test('POST - likes should be zero when property likes is not provided',
+    async() => {
+      const newBlog = {
+        title: 'Clean Code',
+        author: 'Robert Martin',
+        url: 'https://cleancode.com/'
+      };
+      const response = await api.post('/api/blogs').send(newBlog);
+      expect(response.body.likes).toBe(0);
+    });
 
-  test('POST - if title or url is not provided should respond with 400', async() => {
-    const newBlog = {
-      likes: 10,
-      url: 'https://somethig.com'
-    };
-    await api.post('/api/blogs').send(newBlog).expect(400);
-  });
+  test('POST - if title or url is not provided should respond with 400',
+    async() => {
+      const newBlog = {
+        likes: 10,
+        url: 'https://somethig.com'
+      };
+      await api.post('/api/blogs').send(newBlog).expect(400);
+    });
 
   test('DELETE - succeed with a valid ID', async() => {
     const [blogToDelete] = await helper.blogsInDB();
@@ -72,9 +74,25 @@ describe('/api/blogs', () => {
     expect(titles).not.toContain(blogToDelete.title);
   });
 
-  test('DELETE - failed with status 400 if id is not valid', async () => {
-    await api.delete('/api/blogs/aabbcc').expect(400);
-  });
-});
+  test('DELETE - failed with status 400 if id is not valid',
+    async () => {
+      await api.delete('/api/blogs/aabbcc').expect(400);
+    });
 
+  test('PUT - succeed with a valid ID and data provided',
+    async() => {
+      const [blogToUpdate] = await helper.blogsInDB();
+      console.log(blogToUpdate)
+      blogToUpdate.likes = 14;
+      await api.put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToUpdate)
+        .expect(200).expect('Content-Type', /application\/json/);
+      const blogsAtEnd = await helper.blogsInDB();
+      const blogUpdated = blogsAtEnd.find(
+        blog => blog.id === blogToUpdate.id
+      );
+      console.log(blogToUpdate);
+      expect(blogUpdated).toMatchObject(blogToUpdate);
+    });
+});
 afterAll(() => mongoose.connection.close());
