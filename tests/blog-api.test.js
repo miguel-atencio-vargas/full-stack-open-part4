@@ -82,7 +82,6 @@ describe('/api/blogs', () => {
   test('PUT - succeed with a valid ID and data provided',
     async() => {
       const [blogToUpdate] = await helper.blogsInDB();
-      console.log(blogToUpdate)
       blogToUpdate.likes = 14;
       await api.put(`/api/blogs/${blogToUpdate.id}`)
         .send(blogToUpdate)
@@ -91,7 +90,6 @@ describe('/api/blogs', () => {
       const blogUpdated = blogsAtEnd.find(
         blog => blog.id === blogToUpdate.id
       );
-      console.log(blogToUpdate);
       expect(blogUpdated).toMatchObject(blogToUpdate);
     });
 });
