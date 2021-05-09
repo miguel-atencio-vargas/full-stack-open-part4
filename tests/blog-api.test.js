@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcrypt');
+
 const app = require('../app');
 const Blog = require('../models/blog');
-const helper = require('../utils/test_helper');
+const User = require('../models/user');
+const helper = require('./test_helper');
 
 const api = supertest(app);
 
@@ -93,4 +96,45 @@ describe('/api/blogs', () => {
       expect(blogUpdated).toMatchObject(blogToUpdate);
     });
 });
+
+describe('/api/users', () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+    for (let i = 1; i <= 5; i++) {
+      const passwordHash = await bcrypt.hash(`Abc@${i}`, 10);
+      const user = new User({ username: `user${i}`, passwordHash });
+      await user.save();
+    }
+  });
+  test('new user added succeeded', async () => {
+    const usersAtStart = await helper.usersInDB();
+    const newUser = {
+      username: 'root',
+      name: 'Admin user',
+      password: 'Abcd@123'
+    };
+    await api.post('/api/users').send(newUser)
+      .expect(200).expect('Content-Type', /application\/json/);
+    const usersAtEnd = await helper.usersInDB();
+
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
+
+    const userNames = usersAtEnd.map(user => user.username);
+    expect(userNames).toContain(newUser.username);
+  });
+
+  test('user is not created with not valid information', async() => {
+    const usersAtStart = await helper.usersInDB();
+    const newNotValidUser = {
+      username: 'u',
+      name: 'not valid user',
+      password: '12'
+    };
+    await api.post('/api/users').send(newNotValidUser)
+      .expect(400).expect('Content-Type', /application\/json/);
+    const usersAtEnd = await helper.usersInDB();
+    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+  });
+});
+
 afterAll(() => mongoose.connection.close());

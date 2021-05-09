@@ -17,9 +17,10 @@ const unknownEndpoint = (req, res) => {
 const errorHandler = (exception, req, res, next) => {
   logger.error(exception);
   let error;
+  let code = 400;
   if (exception.name === 'CastError') error = 'Malformatted ID';
   if (exception.name === 'ValidationError') error = exception.message;
-  if (error) return res.status(400).send({ error });
+  if (error) return res.status(code).send({ error });
   next(exception);
 };
 module.exports = {

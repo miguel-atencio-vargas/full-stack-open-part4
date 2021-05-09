@@ -5,13 +5,14 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    minglength: 4,
+    minglength: 3,
+    required: true,
     match: /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/igm
   },
   name: String,
   passwordHash: {
     type: String,
-    unique: true
+    required: true,
   }
 });
 

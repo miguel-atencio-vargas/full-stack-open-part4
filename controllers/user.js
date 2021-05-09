@@ -10,7 +10,7 @@ usersRouter.get('/', async(req, res) => {
 
 usersRouter.post('/', async (req, res) => {
   const body = req.body;
-  const regExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
+  const regExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{4,}$/gm;
   if (!regExp.test(body.password)) return res.status(400).json({
     error: 'Password is not secure'
   });
