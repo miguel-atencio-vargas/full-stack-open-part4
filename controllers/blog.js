@@ -1,15 +1,20 @@
 'use strict';
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogRouter.get('/', async(req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user');
   res.json(blogs);
 });
 
 blogRouter.post('/', async(req, res) => {
-  const blog = new Blog(req.body);
-  const result = await blog.save();
+  const user = await User.findOne({});
+  const blog = { ...req.body, user: user._id };
+  const blogToSave = new Blog(blog);
+  const result = await blogToSave.save();
+  user.blogs = user.blogs.concat(result._id);
+  await user.save();
   res.status(201).json(result);
 });
 
@@ -31,4 +36,5 @@ blogRouter.put('/:id', async(req, res) => {
   const updatedAndFormattedBlog = await updatedBlog.toJSON();
   res.json(updatedAndFormattedBlog);
 });
+
 module.exports = blogRouter;
