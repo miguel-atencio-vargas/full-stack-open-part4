@@ -1,5 +1,4 @@
 'use strict';
-
 const logger = require('./logger');
 
 const requestLogger = (req, res, next) => {
@@ -27,6 +26,18 @@ const errorHandler = (exception, req, res, next) => {
   if (error) return res.status(code).send({ error });
   next(exception);
 };
+
+const tokenExtractor = (req, res, next) => {
+  const auth = req.get('authorization');
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    req.token =  auth.substring(7);
+  }
+  next();
+};
+
 module.exports = {
-  requestLogger, unknownEndpoint, errorHandler
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor
 };
