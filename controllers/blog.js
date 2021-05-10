@@ -1,15 +1,36 @@
 'use strict';
 const blogRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
+
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
+
 blogRouter.get('/', async(req, res) => {
-  const blogs = await Blog.find({}).populate('user');
+  const blogs = await Blog.find({}).populate('user', {
+    username: 1,
+    name:1
+  });
   res.json(blogs);
 });
 
+const getTokenFrom = req => {
+  // get the header authorization
+  const auth = req.get('authorization');
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    return auth.substring(7);
+  }
+};
+
 blogRouter.post('/', async(req, res) => {
-  const user = await User.findOne({});
+  const token = getTokenFrom(req);
+  const decodedToken = jwt.verify(token, process.env.SECRET);
+
+  if(!token || !decodedToken.id) return res.status(401).json({
+    error: 'Token missing or invalid'
+  });
+
+  const user = await User.findById(decodedToken.id);
   const blog = { ...req.body, user: user._id };
   const blogToSave = new Blog(blog);
   const result = await blogToSave.save();

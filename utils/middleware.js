@@ -20,6 +20,10 @@ const errorHandler = (exception, req, res, next) => {
   let code = 400;
   if (exception.name === 'CastError') error = 'Malformatted ID';
   if (exception.name === 'ValidationError') error = exception.message;
+  if (exception.name === 'JsonWebTokenError') {
+    code = 401;
+    error = exception.message;
+  }
   if (error) return res.status(code).send({ error });
   next(exception);
 };
