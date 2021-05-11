@@ -123,7 +123,7 @@ describe('/api/blogs - test with the owner of the blog', () => {
       title: 'JS the weird parts',
       author: 'Somebody',
       url: 'http://blog.com',
-      likes: 1,
+      likes: 1
     };
     const respBlog = await api.post('/api/blogs').send(newBlog)
       .set('Authorization', `bearer ${jwtUser5}`)
@@ -154,16 +154,14 @@ describe('/api/blogs - test with the owner of the blog', () => {
 
   test('PUT - succeed with a valid ID and data provided',
     async () => {
-      const [blogToUpdate] = await helper.blogsInDB();
-      blogToUpdate.likes = 14;
-      await api.put(`/api/blogs/${blogToUpdate.id}`)
-        .send(blogToUpdate)
-        .expect(200).expect('Content-Type', /application\/json/);
-      const blogsAtEnd = await helper.blogsInDB();
-      const blogUpdated = blogsAtEnd.find(
-        blog => blog.id === blogToUpdate.id
-      );
-      expect(blogUpdated).toMatchObject(blogToUpdate);
+      blogToOperate.likes = 300;
+      const response = await api.put(`/api/blogs/${blogToOperate.id}`)
+        .set('Authorization', `bearer ${jwtUser5}`)
+        .send(blogToOperate)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+      const blogUpdated = response.body;
+      expect(blogToOperate).toMatchObject(blogUpdated);
     });
 });
 
